@@ -42,7 +42,7 @@ Shader "Unlit/NormalMap"
             float4 texcoord : TEXCOORD0;
             float4 normalWorld: TEXCOORD1;
             float4 tangentWorld: TEXCCORD2;
-            float4 binormalWorld: TEXCOORD3;
+            float3 binormalWorld: TEXCOORD3;
             float4 normalTexcoord: TEXCOORD4;
         };
         // le vertex shader
@@ -70,7 +70,7 @@ Shader "Unlit/NormalMap"
             #else
             // in this case red channel is alpha
             float3 normal = float3(color.a, color.g, 0.0);
-            normal.z = sqrt(1 - dot(nomal, normal));
+            normal.z = sqrt(1 - dot(normal, normal));
             return normal;
             #endif
 
@@ -90,12 +90,12 @@ Shader "Unlit/NormalMap"
             // le fragment shader
         half4 frag(VertexOutput i) : COLOR
         {
-            float3 worldNormalAtPixel = WorldNormalFromNormalMap(-NormalMap, i.normalTexCoord.xy, i.tangentWorld.xyz, i.binormalWorld.xyz, i.normalWorld.xyz);
+            float3 worldNormalAtPixel = WorldNormalFromNormalMap(_NormalMap, i.normalTexcoord.xy, i.tangentWorld.xyz, i.binormalWorld.xyz, i.normalWorld.xyz);
             // world NormalAtPixel return a float3 and we add 1 to make a homogenous matrix.
-            return float4(worldNormalAtPixel, 1)
+            return float4(worldNormalAtPixel, 1);
         }
            
-            ENDCG
+        ENDCG
         }
     }
 }
